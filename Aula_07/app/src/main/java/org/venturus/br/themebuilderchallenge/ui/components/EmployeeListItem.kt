@@ -12,6 +12,7 @@ import androidx.compose.material.icons.sharp.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -44,8 +45,14 @@ fun EmployeeListItem(
                         .padding(horizontal = 12.dp, vertical = 4.dp),
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = employee.name)
-                    Text(text = employee.currentProject)
+                    Text(
+                        text = employee.name,
+                        style = MaterialTheme.typography.titleMedium,
+                    )
+                    Text(
+                        text = employee.currentProject,
+                        style = MaterialTheme.typography.titleSmall,
+                    )
                 }
                 IconButton(
                     onClick = { /*TODO*/ },
@@ -56,11 +63,13 @@ fun EmployeeListItem(
             }
             Text(
                 text = employee.currentRole,
+                style = MaterialTheme.typography.labelMedium,
                 modifier = Modifier.padding(top = 12.dp, bottom = 8.dp)
             )
             Text(
                 text = employee.competences.joinToString(", "),
                 maxLines = 1,
+                style = MaterialTheme.typography.bodyMedium,
                 overflow = TextOverflow.Ellipsis,
             )
         }
