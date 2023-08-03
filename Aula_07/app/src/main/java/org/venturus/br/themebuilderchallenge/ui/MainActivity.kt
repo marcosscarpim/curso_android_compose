@@ -1,5 +1,6 @@
 package org.venturus.br.themebuilderchallenge.ui
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import org.venturus.br.themebuilderchallenge.data.EmployeeDataProvider
 import org.venturus.br.themebuilderchallenge.ui.theme.ThemeBuilderChallengeTheme
 
 class MainActivity : ComponentActivity() {
@@ -41,4 +43,21 @@ class MainActivity : ComponentActivity() {
             EmployeeApp(employeeHomeUIState = uiState)
         }
     }
+}
+
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_YES,
+    name = "DefaultPreviewDark"
+)
+@Preview(
+    uiMode = Configuration.UI_MODE_NIGHT_NO,
+    name = "DefaultPreviewLight"
+)
+@Composable
+fun ReplyAppPreviewLight() {
+    EmployeeApp(
+        employeeHomeUIState = EmployeeHomeUIState(
+            employees = EmployeeDataProvider.allEmployees
+        )
+    )
 }
