@@ -42,10 +42,43 @@ fun ClickCounter(modifier: Modifier = Modifier) {
     }
 }
 
+@Composable
+fun StatefulClickCounter(modifier: Modifier = Modifier) {
+    var count by rememberSaveable { mutableStateOf(0) }
+    StatelessCounter(
+        modifier = modifier,
+        count = count,
+        onCountChanged = { count++ }
+    )
+}
+
+@Composable
+fun StatelessCounter(
+    modifier: Modifier = Modifier,
+    count: Int,
+    onCountChanged: () -> Unit
+) {
+    Column(modifier = modifier.padding(16.dp)) {
+        Text("You've clicked $count times")
+        Spacer(Modifier.height(16.dp))
+        Button(onClick = onCountChanged, enabled = count < 10) {
+            Text("Click me")
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun ClickCounterPreview() {
     ComposeStatesTheme {
         ClickCounter()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun HoistedClickCounter() {
+    ComposeStatesTheme {
+        StatefulClickCounter()
     }
 }
