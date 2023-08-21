@@ -1,6 +1,5 @@
 package org.venturus.br.navigation
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -21,12 +20,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import org.venturus.br.navigation.ui.theme.NavigationTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,20 +37,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             NavigationTheme {
-                var currentDestination by remember { mutableStateOf(AppRoute.PAGE1) }
+                val navController = rememberNavController()
+                val currentBackStack by navController.currentBackStackEntryAsState()
+                val currentDestination = currentBackStack?.destination?.route ?: AppRoute.PAGE1
                 Scaffold(
                     bottomBar = {
                         BottomBar(
                             currentDestination = currentDestination,
-                            onDestinationSelected = { currentDestination = it }
+                            onDestinationSelected = { newRoute ->
+                                navController.navigateSingleTop(newRoute)
+                            }
                         )
                     }
                 ) { innerPadding ->
-                    val pageModifier = Modifier.padding(innerPadding)
-                    when (currentDestination) {
-                        AppRoute.PAGE1 -> Page1(pageModifier)
-                        AppRoute.PAGE2 -> Page2(pageModifier)
-                        AppRoute.PAGE3 -> Page3(pageModifier)
+                    NavHost(
+                        modifier = Modifier.padding(innerPadding),
+                        navController = navController,
+                        startDestination = AppRoute.PAGE1
+                    ) {
+                        composable(AppRoute.PAGE1) { Page1() }
+                        composable(AppRoute.PAGE2) { Page2() }
+                        composable(AppRoute.PAGE3) { Page3() }
                     }
                 }
             }
@@ -128,3 +136,12 @@ val BOTTOM_BAR_DESTINATIONS = listOf(
     AppDestination(AppRoute.PAGE2, Icons.Filled.Star),
     AppDestination(AppRoute.PAGE3, Icons.Filled.Email)
 )
+
+fun NavHostController.navigateSingleTop(route: String) =
+    this.navigate(route) {
+        launchSingleTop = true
+        popUpTo(graph.startDestinationId) {
+            saveState = true
+        }
+        restoreState = true
+    }
