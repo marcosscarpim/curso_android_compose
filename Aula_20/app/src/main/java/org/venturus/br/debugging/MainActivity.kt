@@ -91,8 +91,8 @@ fun VntScreen() {
 
         Header()
         Body(scroll)
-        Title(scroll.value)
-        VntImage(scroll.value)
+        Title { scroll.value }
+        VntImage { scroll.value }
     }
 }
 
@@ -107,10 +107,10 @@ fun Header() {
 }
 
 @Composable
-fun Title(scroll: Int) {
+fun Title(scrollProvider: () -> Int) {
     val maxOffset = with(LocalDensity.current) { MaxTitleOffset.toPx() }
     val minOffset = with(LocalDensity.current) { MinTitleOffset.toPx() }
-    val offset = (maxOffset - scroll).coerceAtLeast(minOffset)
+
 
     Column(
         verticalArrangement = Arrangement.Bottom,
@@ -118,6 +118,7 @@ fun Title(scroll: Int) {
             .heightIn(min = TitleHeight)
             .statusBarsPadding()
             .offset {
+                val offset = (maxOffset - scrollProvider()).coerceAtLeast(minOffset)
                 IntOffset(x = 0, y = offset.toInt())
             }
             .background(Color.White)
@@ -144,10 +145,10 @@ fun Title(scroll: Int) {
 }
 
 @Composable
-fun VntImage(scroll: Int) {
+fun VntImage(scrollProvider: () -> Int) {
     val collapseRange = with(LocalDensity.current) { (MaxTitleOffset - MinTitleOffset).toPx() }
     val collapseFractionProvider = {
-        (scroll / collapseRange).coerceIn(0f, 1f)
+        (scrollProvider() / collapseRange).coerceIn(0f, 1f)
     }
     CollapsingImageLayout(
         collapseFractionProvider = collapseFractionProvider,
